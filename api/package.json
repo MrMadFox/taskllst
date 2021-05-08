@@ -1,0 +1,32 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node start.js",
+    "dev": "nodemon --ignore 'test/' start.js",
+    "debug": "nodemon --ignore 'test/' --inspect=0.0.0.0:9229 start.js",
+    "test": "mocha --timeout 60000"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "cros": "^1.0.1",
+    "express": "^4.17.1",
+    "express-requests-logger": "^3.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.7",
+    "nconf": "^0.11.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "got": "^9.6.0",
+    "mocha": "^8.4.0",
+    "nodemon": "^2.0.7"
+  }
+}

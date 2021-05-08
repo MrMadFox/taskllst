@@ -1,0 +1,10 @@
+{
+  "DB": {
+    "HOST": "mongo",
+    "PORT": 27017,
+    "NAME": "tasklist"
+  },
+  "PORT": 8080,
+  "HEALTH_SECRET": "thisissecret",
+  "JWT_SECRET": "thisissecret"
+}

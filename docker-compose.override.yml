@@ -1,0 +1,22 @@
+version: '3'
+services: 
+    api:
+        command: ['sh', '-c', 'npm rebuild && npm run debug']
+        build:
+            context: .
+            dockerfile: dockerfile.api
+        restart: on-failure
+        environment:
+            - NODE_ENV=development
+        volumes:
+            - ./api:/app/api
+        ports:
+            - 9229:9229
+            - 8080:${PORT:-8080}
+    
+    nginx:
+        build:
+            context: .
+            dockerfile: dockerfile.nginx
+        volumes: 
+            - ./nginx/config.conf:/etc/nginx/conf.d/config.conf

@@ -1,0 +1,25 @@
+version: '3'
+services: 
+    api:
+        command: ['node', 'start']
+        environment: 
+            - NODE_ENV=production
+            - PORT=8080
+            - HEALTH_SECRET=${HEALTH_SECRET:-thisissecret}
+            - JWT_SECRET=${JWT_SECRET:-thisissecret}
+        image: ${REGISTY:-local}/api:latest
+        restart: 'always'
+        depends_on: 
+            - mongo
+    
+    nginx:
+        image: ${REGISTY:-local}/nginx:latest
+        ports: 
+            - 80:8000
+        depends_on: 
+            - api
+    
+    mongo:
+        image: mongo:latest
+        ports:
+            - 27017:27017
