@@ -33,7 +33,7 @@ router.get('/list', roleAuth(['admin']), async (req, res) => {
 })
 
 router.get('/reviewers', async (req, res) => {
-    const { user: { _id: id }, user } = req
+    let { user: { _id: id }, user } = req
     if (user.role === 'admin')
         ({ id = id } = req.body);
     const ids = (await Review.find({
@@ -45,7 +45,7 @@ router.get('/reviewers', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
-    const { user: { _id: id }, user } = req
+    let { user: { _id: id }, user } = req
     if (user.role === 'admin')
         ({ id = id } = req.body);
     res.status(200).json({
