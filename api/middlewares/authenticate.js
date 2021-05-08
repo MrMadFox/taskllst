@@ -3,7 +3,7 @@ const nconf = require('nconf'),
     { User } = require('../models/user');
 
 const middleware = async (req, res, next) => {
-    const { token } = req.body
+    const { token } = req.cookies
     try {
         const { id } = await jwt.verify(token, nconf.get('JWT_SECRET'))
         const user = await User.findById(id).lean()

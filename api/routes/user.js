@@ -25,31 +25,87 @@ router.post('/', roleAuth(['admin']), async (req, res) => {
     })
 })
 
+
 router.get('/list', roleAuth(['admin']), async (req, res) => {
-    const ids = (await User.find({}, '_id').lean()).map(user => user._id.toString())
     res.status(200).send({
-        ids
+        result: await User.find({}).select({ _id: 0, hpass: 0, __v: 0 }).lean()
     })
 })
 
-router.get('/reviewers', async (req, res) => {
-    let { user: { _id: id }, user } = req
-    if (user.role === 'admin')
-        ({ id = id } = req.body);
-    const ids = (await Review.find({
-        reviewee: id
-    }).select({ reviewer: 1, _id: 0 }).lean()).map(revirew => revirew.reviewer._id.toString())
-    res.status(200).send({
-        ids
+
+router.get('/email/:email', roleAuth(['admin']), async (req, res) => {
+    const { email } = req.params
+    res.status(200).json({
+        result: await User.findOne({ email }).select({ _id: 0, hpass: 0, __v: 0 }).lean()
     })
 })
+
 
 router.get('/', async (req, res) => {
-    let { user: { _id: id }, user } = req
-    if (user.role === 'admin')
-        ({ id = id } = req.body);
+    let { user } = req
     res.status(200).json({
-        result: await User.findById(id).select({ email: 1, _id: 0 }).lean()
+        result: {
+            email: user.email,
+            role: user.role
+        }
+    })
+})
+
+
+getReviewersIds = async (user) => {
+    const reviews = await Review.find({
+        reviewee: user._id
+    }).select({ reviewer: 1, _id: 0 }).lean()
+    return reviews.map(revirew => revirew.reviewer._id.toString())
+}
+
+getRevieweeIds = async (user) => {
+    const reviews = await Review.find({
+        reviewer: user._id
+    }).select({ reviewee: 1, _id: 0 }).lean()
+    return reviews.map(revirew => revirew.reviewer._id.toString())
+}
+
+
+router.get('/reviewers', async (req, res) => {
+    const { user } = req
+    const ids = getReviewersIds(user)
+    res.status(200).send({
+        ids
+    })
+})
+
+router.get('/reviewers/email/:email', roleAuth(['admin']), async (req, res) => {
+    const { email } = req.params
+    const userTmp = await User.findOne({ email }).select({ _id: 1 }).lean()
+    if (!userTmp)
+        return res.status(400).send({
+            msg: 'user not found'
+        })
+    const ids = await getReviewersIds(userTmp)
+    res.status(200).send({
+        ids
+    })
+})
+
+router.get('/reviewees', async (req, res) => {
+    const { user } = req
+    const ids = getRevieweeIds(user)
+    res.status(200).send({
+        ids
+    })
+})
+
+router.get('/reviewees/email/:email', roleAuth(['admin']), async (req, res) => {
+    const { email } = req.params
+    const userTmp = await User.findOne({ email }).select({ _id: 1 }).lean()
+    if (!userTmp)
+        return res.status(400).send({
+            msg: 'user not found'
+        })
+    const ids = await getRevieweeIds(userTmp)
+    res.status(200).send({
+        ids
     })
 })
 

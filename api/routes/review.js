@@ -27,17 +27,21 @@ router.delete('/', roleAuth(['admin']), async (req, res) => {
             msg: 'check emails'
         })
     try {
-        await Review.findOneAndDelete({
+        const review = await Review.findOneAndRemove({
             reviewer: reviewerObj._id,
             reviewee: revieweeObj._id
-        })
+        });
+        if (!review)
+            return res.status(404).json({
+                msg: 'pair not found'
+            })
     } catch (err) {
         console.log(err);
-        return res.status(400).json({
-            msg: 'pair not found'
+        return res.status(500).json({
+            msg: 'something went wrong'
         })
     }
-    res.status(204).json({
+    res.status(201).json({
         msg: 'deleted'
     })
 })
