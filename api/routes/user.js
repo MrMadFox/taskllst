@@ -38,7 +38,7 @@ router.get('/reviewers', async (req, res) => {
         ({ id = id } = req.body);
     const ids = (await Review.find({
         reviewee: id
-    }).select({ reviewer: 1, _id: 0 }).lean()).map(revirew => revirew._id.toString())
+    }).select({ reviewer: 1, _id: 0 }).lean()).map(revirew => revirew.reviewer._id.toString())
     res.status(200).send({
         ids
     })
